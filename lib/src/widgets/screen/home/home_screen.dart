@@ -51,16 +51,26 @@ class _HomeScreenState extends State<HomeScreen> {
               itemBuilder: ((context, index) {
                 final user = users[index];
 
-                return Card(
-                  child: Column(
-                    children: [
-                      Text("${user.id}"),
-                      Text(user.firstName),
-                      Text(user.lastName),
-                      Text(user.gender),
-                      Text(user.country),
-                      Text("${user.age}"),
-                    ],
+                return Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Card(
+                    color: Colors.grey.shade300,
+                    shape: const RoundedRectangleBorder(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 2),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("${user.id}"),
+                          Text(user.firstName),
+                          Text(user.lastName),
+                          Text(user.gender),
+                          Text(user.country),
+                          Text("${user.age}"),
+                        ],
+                      ),
+                    ),
                   ),
                 );
               }),
