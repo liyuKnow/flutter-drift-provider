@@ -1,5 +1,9 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:drift/drift.dart' as drift;
+import 'package:master_drift_provider/src/data/local/helper/db_helper.dart';
 
 class EditUserScreen extends StatefulWidget {
   const EditUserScreen({super.key});
@@ -9,6 +13,7 @@ class EditUserScreen extends StatefulWidget {
 }
 
 class _EditUserScreenState extends State<EditUserScreen> {
+  late ReportDatabase _db;
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController genderController = TextEditingController();
@@ -16,6 +21,13 @@ class _EditUserScreenState extends State<EditUserScreen> {
   TextEditingController ageController = TextEditingController();
   TextEditingController dateOfBirthController = TextEditingController();
   DateTime? _selectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _db = ReportDatabase();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +78,30 @@ class _EditUserScreenState extends State<EditUserScreen> {
                       backgroundColor: Colors.blue[300],
                       textStyle: const TextStyle(
                           fontSize: 15, fontWeight: FontWeight.w400)),
-                  onPressed: () async {
+                  onPressed: () {
                     // TODO : Update User Data With Location
-                    print("Test Button");
+                    // final entity = UserCompanion.insert(firstName: firstName, lastName: lastName, gender: gender, country: country, age: age)
+                    final entity = UserCompanion(
+                        firstName: drift.Value(firstNameController.text),
+                        lastName: drift.Value(lastNameController.text),
+                        gender: drift.Value(genderController.text),
+                        country: drift.Value(countryController.text),
+                        age: drift.Value(int.parse(ageController.text)));
+
+                    _db.insertUser(entity).then((value) {
+                      ScaffoldMessenger.of(context).showMaterialBanner(
+                          MaterialBanner(
+                              content:
+                                  Text("Data inserted successfully! $value"),
+                              actions: [
+                            TextButton(
+                                onPressed: () {
+                                  ScaffoldMessenger.of(context)
+                                      .hideCurrentMaterialBanner();
+                                },
+                                child: const Text("Close"))
+                          ]));
+                    });
                   },
                   child: const Text(
                     'Update Details',
