@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class EditUserScreen extends StatefulWidget {
   const EditUserScreen({super.key});
@@ -8,7 +9,14 @@ class EditUserScreen extends StatefulWidget {
 }
 
 class _EditUserScreenState extends State<EditUserScreen> {
-  TextEditingController nameController = TextEditingController();
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController genderController = TextEditingController();
+  TextEditingController countryController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+  TextEditingController dateOfBirthController = TextEditingController();
+  DateTime? _selectedDate;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,19 +24,165 @@ class _EditUserScreenState extends State<EditUserScreen> {
         title: const Text("Update User"),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          TextFormField(
-            controller: nameController,
-            keyboardType: TextInputType.name,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Username can not be empty';
-              }
-            },
-          )
-        ],
-      ),
+      body: Card(
+          child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CustomFormField(
+              controller: firstNameController,
+              txtLabel: "First Name",
+            ),
+            CustomFormField(
+              controller: lastNameController,
+              txtLabel: "Last Name",
+            ),
+            CustomFormField(
+              controller: genderController,
+              txtLabel: "Gender",
+            ),
+            CustomFormField(
+              controller: countryController,
+              txtLabel: "Country",
+            ),
+            CustomFormField(
+              controller: ageController,
+              txtLabel: "Age",
+            ),
+            CustomDatePickerFormField(
+              controller: dateOfBirthController,
+              txtLabel: "Date of Birth",
+              callback: () => pickDateOfBirth(context),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              TextButton(
+                  style: TextButton.styleFrom(
+                      padding: const EdgeInsets.all(12),
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.blue[300],
+                      textStyle: const TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.w400)),
+                  onPressed: () async {
+                    // TODO : Update User Data With Location
+                    print("Test Button");
+                  },
+                  child: const Text(
+                    'Update Details',
+                    style: TextStyle(fontSize: 16),
+                  ))
+            ])
+          ],
+        ),
+      )),
+    );
+  }
+
+  Future<void> pickDateOfBirth(BuildContext context) async {
+    final initialDate = DateTime.now();
+    final newDate = await showDatePicker(
+        context: context,
+        initialDate: _selectedDate ?? initialDate,
+        firstDate: DateTime(DateTime.now().year - 100),
+        lastDate: DateTime(DateTime.now().year + 1),
+        builder: (context, child) => Theme(
+            data: ThemeData().copyWith(
+                colorScheme: const ColorScheme.light(
+                    primary: Colors.blue,
+                    onPrimary: Colors.white,
+                    onSurface: Colors.black),
+                dialogBackgroundColor: Colors.white),
+            child: child ?? const Text("")));
+
+    if (newDate == null) {
+      return;
+    }
+
+    setState(() {
+      _selectedDate = newDate;
+      String formattedDate = DateFormat('dd/MM/yyyy').format(newDate);
+      dateOfBirthController.text = formattedDate;
+    });
+  }
+}
+
+class CustomFormField extends StatelessWidget {
+  const CustomFormField({
+    super.key,
+    required this.controller,
+    required this.txtLabel,
+  });
+
+  final TextEditingController controller;
+  final String txtLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 10,
+        ),
+        TextFormField(
+          controller: controller,
+          keyboardType: TextInputType.name,
+          cursorHeight: 26,
+          decoration: InputDecoration(
+            hintText: 'Enter $txtLabel',
+            label: Text(txtLabel),
+            border: const OutlineInputBorder(),
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return '$txtLabel can not be empty';
+            }
+            return null;
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class CustomDatePickerFormField extends StatelessWidget {
+  const CustomDatePickerFormField(
+      {super.key,
+      required this.controller,
+      required this.txtLabel,
+      required this.callback});
+
+  final TextEditingController controller;
+  final String txtLabel;
+  final VoidCallback callback;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 10,
+        ),
+        TextFormField(
+          controller: controller,
+          keyboardType: TextInputType.name,
+          cursorHeight: 26,
+          decoration: InputDecoration(
+            hintText: 'Enter $txtLabel',
+            label: Text(txtLabel),
+            border: const OutlineInputBorder(),
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return '$txtLabel can not be empty';
+            }
+            return null;
+          },
+          onTap: callback,
+        ),
+      ],
     );
   }
 }

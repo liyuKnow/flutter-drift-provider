@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:master_drift_provider/src/controllers/controllers.dart';
 
-enum MenuItems { import, export, sync }
+enum MenuItems { import, export, sync, pickFile }
 
 // class PopUpActions {
 PopupMenuButton<MenuItems> popupActions() {
@@ -9,13 +9,12 @@ PopupMenuButton<MenuItems> popupActions() {
       onSelected: (value) {
         if (value == MenuItems.import) {
           FilesController.loadData();
-          ;
         } else if (value == MenuItems.export) {
-          FilesController.loadData();
-          ; //  yellow comments
+          FilesController.loadData(); //  yellow comments
         } else if (value == MenuItems.sync) {
           FilesController.loadData();
-          ;
+        } else if (value == MenuItems.pickFile) {
+          FilesController.pickFile();
         }
       },
       itemBuilder: ((context) => [

@@ -84,4 +84,8 @@ class FilesController {
 
     //   getAllUserDetails();
   }
+
+  static pickFile() {
+    print("File Picker Logic");
+  }
 }
