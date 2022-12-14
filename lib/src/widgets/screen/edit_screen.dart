@@ -30,6 +30,20 @@ class _EditUserScreenState extends State<EditUserScreen> {
   }
 
   @override
+  void dispose() {
+    _db.close();
+
+    firstNameController.dispose();
+    lastNameController.dispose();
+    genderController.dispose();
+    countryController.dispose();
+    ageController.dispose();
+    dateOfBirthController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -78,31 +92,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
                       backgroundColor: Colors.blue[300],
                       textStyle: const TextStyle(
                           fontSize: 15, fontWeight: FontWeight.w400)),
-                  onPressed: () {
-                    // TODO : Update User Data With Location
-                    // final entity = UserCompanion.insert(firstName: firstName, lastName: lastName, gender: gender, country: country, age: age)
-                    final entity = UserCompanion(
-                        firstName: drift.Value(firstNameController.text),
-                        lastName: drift.Value(lastNameController.text),
-                        gender: drift.Value(genderController.text),
-                        country: drift.Value(countryController.text),
-                        age: drift.Value(int.parse(ageController.text)));
-
-                    _db.insertUser(entity).then((value) {
-                      ScaffoldMessenger.of(context).showMaterialBanner(
-                          MaterialBanner(
-                              content:
-                                  Text("Data inserted successfully! $value"),
-                              actions: [
-                            TextButton(
-                                onPressed: () {
-                                  ScaffoldMessenger.of(context)
-                                      .hideCurrentMaterialBanner();
-                                },
-                                child: const Text("Close"))
-                          ]));
-                    });
-                  },
+                  onPressed: () => addUser(),
                   child: const Text(
                     'Update Details',
                     style: TextStyle(fontSize: 16),
@@ -138,6 +128,36 @@ class _EditUserScreenState extends State<EditUserScreen> {
       _selectedDate = newDate;
       String formattedDate = DateFormat('dd/MM/yyyy').format(newDate);
       dateOfBirthController.text = formattedDate;
+    });
+  }
+
+  void addUser() {
+    // TODO : Update User Data With Location
+    // final entity = UserCompanion.insert(firstName: firstName, lastName: lastName, gender: gender, country: country, age: age)
+    final entity = UserCompanion(
+        firstName: drift.Value(firstNameController.text),
+        lastName: drift.Value(lastNameController.text),
+        gender: drift.Value(genderController.text),
+        country: drift.Value(countryController.text),
+        age: drift.Value(int.parse(ageController.text)));
+
+    _db.insertUser(entity).then((value) {
+      ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
+          backgroundColor: Colors.green,
+          content: Text(
+            "Data inserted successfully! $value",
+            style: TextStyle(color: Colors.white),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                },
+                child: const Icon(
+                  Icons.close,
+                  color: Colors.white,
+                ))
+          ]));
     });
   }
 }
