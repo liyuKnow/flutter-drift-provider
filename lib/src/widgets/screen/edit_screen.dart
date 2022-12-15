@@ -62,10 +62,14 @@ class _EditUserScreenState extends State<EditUserScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Update User"),
-        centerTitle: true,
-      ),
+      appBar:
+          AppBar(title: const Text("Update User"), centerTitle: true, actions: [
+        IconButton(
+            onPressed: () {
+              deleteUser();
+            },
+            icon: Icon(Icons.delete_outline))
+      ]),
       body: Card(
           child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -195,7 +199,29 @@ class _EditUserScreenState extends State<EditUserScreen> {
           backgroundColor: Colors.green,
           content: Text(
             "Data updated successfully! $value",
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                  Navigator.pushNamed(context, '/');
+                },
+                child: const Icon(
+                  Icons.close,
+                  color: Colors.white,
+                ))
+          ]));
+    });
+  }
+
+  void deleteUser() {
+    _db.deleteUser(widget.userId).then((value) {
+      ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
+          backgroundColor: Colors.green,
+          content: Text(
+            "Data deleted successfully! $value",
+            style: const TextStyle(color: Colors.white),
           ),
           actions: [
             TextButton(
