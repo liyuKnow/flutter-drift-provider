@@ -51,24 +51,37 @@ class _HomeScreenState extends State<HomeScreen> {
               itemBuilder: ((context, index) {
                 final user = users[index];
 
-                return Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Card(
-                    color: Colors.grey.shade300,
-                    shape: const RoundedRectangleBorder(),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 2),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("${user.id}"),
-                          Text(user.firstName),
-                          Text(user.lastName),
-                          Text(user.gender),
-                          Text(user.country),
-                          Text("${user.age}"),
-                        ],
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/edit_user',
+                        arguments: user.id);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Card(
+                      color: Colors.grey.shade300,
+                      shape: const RoundedRectangleBorder(),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 2),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("${user.id}"),
+                                Text("First Name : ${user.firstName}"),
+                                Text("Last Name : ${user.lastName}"),
+                                Text("Updated : ${user.completed}".toString()),
+                                Text("Gender :${user.gender}"),
+                                Text("Country : ${user.country}"),
+                                Text("Age : ${user.age}"),
+                              ],
+                            ),
+                            const Icon(Icons.qr_code_2_outlined)
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -76,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
               }),
             );
           }
-          return const Center(child: Text("No Users yet!"));
+          return const Center(child: Text("No Records yet!"));
         }),
       ),
     );

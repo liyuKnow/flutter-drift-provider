@@ -6,7 +6,9 @@ import 'package:drift/drift.dart' as drift;
 import 'package:master_drift_provider/src/data/local/helper/db_helper.dart';
 
 class EditUserScreen extends StatefulWidget {
-  const EditUserScreen({super.key});
+  final int userId;
+
+  const EditUserScreen({super.key, required this.userId});
 
   @override
   State<EditUserScreen> createState() => _EditUserScreenState();
@@ -14,6 +16,8 @@ class EditUserScreen extends StatefulWidget {
 
 class _EditUserScreenState extends State<EditUserScreen> {
   late ReportDatabase _db;
+  late UserData _UserData;
+
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController genderController = TextEditingController();
@@ -25,8 +29,20 @@ class _EditUserScreenState extends State<EditUserScreen> {
   @override
   void initState() {
     super.initState();
-
     _db = ReportDatabase();
+    getUser();
+  }
+
+  Future<void> getUser() async {
+    _UserData = await _db.getUsersByID(widget.userId);
+
+    // FILL USER DETAIL TO INPUTS
+    firstNameController.text = _UserData.firstName;
+    lastNameController.text = _UserData.lastName;
+    genderController.text = _UserData.gender;
+    countryController.text = _UserData.country;
+    ageController.text = _UserData.age.toString();
+    dateOfBirthController.text = _UserData.firstName;
   }
 
   @override
@@ -92,9 +108,11 @@ class _EditUserScreenState extends State<EditUserScreen> {
                       backgroundColor: Colors.blue[300],
                       textStyle: const TextStyle(
                           fontSize: 15, fontWeight: FontWeight.w400)),
-                  onPressed: () => addUser(),
+                  onPressed: () {
+                    editUser();
+                  },
                   child: const Text(
-                    'Update Details',
+                    'Update User',
                     style: TextStyle(fontSize: 16),
                   ))
             ])
@@ -132,7 +150,6 @@ class _EditUserScreenState extends State<EditUserScreen> {
   }
 
   void addUser() {
-    // TODO : Update User Data With Location
     // final entity = UserCompanion.insert(firstName: firstName, lastName: lastName, gender: gender, country: country, age: age)
     final entity = UserCompanion(
         firstName: drift.Value(firstNameController.text),
@@ -152,6 +169,39 @@ class _EditUserScreenState extends State<EditUserScreen> {
             TextButton(
                 onPressed: () {
                   ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                },
+                child: const Icon(
+                  Icons.close,
+                  color: Colors.white,
+                ))
+          ]));
+    });
+  }
+
+  void editUser() {
+    // TODO : Update User Data With Location
+    // final entity = UserCompanion.insert(firstName: firstName, lastName: lastName, gender: gender, country: country, age: age)
+    final entity = UserCompanion(
+        id: drift.Value(widget.userId),
+        firstName: drift.Value(firstNameController.text),
+        lastName: drift.Value(lastNameController.text),
+        completed: const drift.Value(true),
+        gender: drift.Value(genderController.text),
+        country: drift.Value(countryController.text),
+        age: drift.Value(int.parse(ageController.text)));
+
+    _db.updateUser(entity).then((value) {
+      ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
+          backgroundColor: Colors.green,
+          content: Text(
+            "Data updated successfully! $value",
+            style: TextStyle(color: Colors.white),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                  Navigator.pushNamed(context, '/');
                 },
                 child: const Icon(
                   Icons.close,

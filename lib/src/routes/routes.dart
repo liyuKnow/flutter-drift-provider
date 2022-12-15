@@ -3,13 +3,23 @@ import 'package:master_drift_provider/src/widgets/screen/screens.dart';
 
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
+    final args = settings.arguments;
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(builder: (_) => const HomeScreen());
+
       case '/edit_user':
-        return MaterialPageRoute(builder: (_) => const EditUserScreen());
-      case '/qr_screen':
-        return MaterialPageRoute(builder: (_) => const QRScreen());
+        if (args is int) {
+          return MaterialPageRoute(
+              builder: (_) => EditUserScreen(
+                    userId: args,
+                  ));
+        }
+        return _errorRoute();
+      // case '/qr_screen':
+      //   if ( args is int) {
+      //     return MaterialPageRoute(builder: (_) => const QRScreen());
+      //   }
       default:
         return _errorRoute();
     }
