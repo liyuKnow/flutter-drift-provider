@@ -15,6 +15,8 @@ class EditUserScreen extends StatefulWidget {
 }
 
 class _EditUserScreenState extends State<EditUserScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   late ReportDatabase _db;
   late UserData _UserData;
 
@@ -73,9 +75,9 @@ class _EditUserScreenState extends State<EditUserScreen> {
       body: Card(
           child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
+        child: Form(
+          key: _formKey,
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
             CustomFormField(
               controller: firstNameController,
               txtLabel: "First Name",
@@ -120,7 +122,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
                     style: TextStyle(fontSize: 16),
                   ))
             ])
-          ],
+          ]),
         ),
       )),
     );
@@ -184,35 +186,38 @@ class _EditUserScreenState extends State<EditUserScreen> {
 
   void editUser() {
     // TODO : Update User Data With Location
-    // final entity = UserCompanion.insert(firstName: firstName, lastName: lastName, gender: gender, country: country, age: age)
-    final entity = UserCompanion(
-        id: drift.Value(widget.userId),
-        firstName: drift.Value(firstNameController.text),
-        lastName: drift.Value(lastNameController.text),
-        completed: const drift.Value(true),
-        gender: drift.Value(genderController.text),
-        country: drift.Value(countryController.text),
-        age: drift.Value(int.parse(ageController.text)));
+    final isValid = _formKey.currentState?.validate();
+    if (isValid != null && isValid) {
+      // final entity = UserCompanion.insert(firstName: firstName, lastName: lastName, gender: gender, country: country, age: age)
+      final entity = UserCompanion(
+          id: drift.Value(widget.userId),
+          firstName: drift.Value(firstNameController.text),
+          lastName: drift.Value(lastNameController.text),
+          completed: const drift.Value(true),
+          gender: drift.Value(genderController.text),
+          country: drift.Value(countryController.text),
+          age: drift.Value(int.parse(ageController.text)));
 
-    _db.updateUser(entity).then((value) {
-      ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-          backgroundColor: Colors.green,
-          content: Text(
-            "Data updated successfully! $value",
-            style: const TextStyle(color: Colors.white),
-          ),
-          actions: [
-            TextButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-                  Navigator.pushNamed(context, '/');
-                },
-                child: const Icon(
-                  Icons.close,
-                  color: Colors.white,
-                ))
-          ]));
-    });
+      _db.updateUser(entity).then((value) {
+        ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
+            backgroundColor: Colors.green,
+            content: Text(
+              "Data updated successfully! $value",
+              style: const TextStyle(color: Colors.white),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                    Navigator.pushNamed(context, '/');
+                  },
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.white,
+                  ))
+            ]));
+      });
+    }
   }
 
   void deleteUser() {
