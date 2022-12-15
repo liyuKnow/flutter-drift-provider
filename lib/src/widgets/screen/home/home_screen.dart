@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:provider/provider.dart';
 import 'package:master_drift_provider/src/data/local/helper/db_helper.dart';
 import 'package:master_drift_provider/src/data/local/models/user_model.dart';
 
@@ -10,19 +11,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late ReportDatabase _db;
-
   @override
   void initState() {
     super.initState();
-
-    _db = ReportDatabase();
-  }
-
-  @override
-  void dispose() {
-    _db.close();
-    super.dispose();
   }
 
   @override
@@ -31,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
           title: const Text("Users List"), centerTitle: true, actions: []),
       body: FutureBuilder<List<UserData>>(
-        future: _db.getAllUsers(),
+        future: Provider.of<ReportDatabase>(context).getAllUsers(),
         builder: ((context, snapshot) {
           final List<UserData>? users = snapshot.data;
 

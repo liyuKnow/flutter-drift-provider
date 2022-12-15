@@ -28,6 +28,10 @@ class ReportDatabase extends _$ReportDatabase {
     return await select(user).get();
   }
 
+  Stream<List<UserData>> streamAllUsers() {
+    return select(user).watch();
+  }
+
   Future<UserData> getUsersByID(int id) async {
     return await (select(user)..where((tbl) => tbl.id.equals(id))).getSingle();
   }

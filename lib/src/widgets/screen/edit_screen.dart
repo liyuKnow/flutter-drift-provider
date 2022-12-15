@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:drift/drift.dart' as drift;
+import 'package:provider/provider.dart';
 import 'package:master_drift_provider/src/data/local/helper/db_helper.dart';
 
 class EditUserScreen extends StatefulWidget {
@@ -17,7 +18,6 @@ class EditUserScreen extends StatefulWidget {
 class _EditUserScreenState extends State<EditUserScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  late ReportDatabase _db;
   late UserData _UserData;
 
   TextEditingController firstNameController = TextEditingController();
@@ -31,12 +31,12 @@ class _EditUserScreenState extends State<EditUserScreen> {
   @override
   void initState() {
     super.initState();
-    _db = ReportDatabase();
     getUser();
   }
 
   Future<void> getUser() async {
-    _UserData = await _db.getUsersByID(widget.userId);
+    _UserData =
+        await Provider.of<ReportDatabase>(context).getUsersByID(widget.userId);
 
     // FILL USER DETAIL TO INPUTS
     firstNameController.text = _UserData.firstName;
@@ -49,7 +49,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
 
   @override
   void dispose() {
-    _db.close();
+    Provider.of<ReportDatabase>(context).close();
 
     firstNameController.dispose();
     lastNameController.dispose();
@@ -164,7 +164,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
         country: drift.Value(countryController.text),
         age: drift.Value(int.parse(ageController.text)));
 
-    _db.insertUser(entity).then((value) {
+    Provider.of<ReportDatabase>(context).insertUser(entity).then((value) {
       ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
           backgroundColor: Colors.green,
           content: Text(
@@ -198,7 +198,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
           country: drift.Value(countryController.text),
           age: drift.Value(int.parse(ageController.text)));
 
-      _db.updateUser(entity).then((value) {
+      Provider.of<ReportDatabase>(context).updateUser(entity).then((value) {
         ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
             backgroundColor: Colors.green,
             content: Text(
@@ -221,7 +221,9 @@ class _EditUserScreenState extends State<EditUserScreen> {
   }
 
   void deleteUser() {
-    _db.deleteUser(widget.userId).then((value) {
+    Provider.of<ReportDatabase>(context, listen: false)
+        .deleteUser(widget.userId)
+        .then((value) {
       ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
           backgroundColor: Colors.green,
           content: Text(
