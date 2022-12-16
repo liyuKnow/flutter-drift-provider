@@ -31,17 +31,13 @@ class _EditUserScreenState extends State<EditUserScreen> {
   @override
   void initState() {
     super.initState();
-    print(" I AM HERE I AM HERE I AM HERE I AM HERE I AM HERE");
     getUser();
   }
 
   Future<void> getUser() async {
-    print(
-        "/* -------------------------------------------------------------------------- */");
     try {
       _UserData = await Provider.of<ReportDatabase>(context, listen: false)
           .getUsersByID(widget.userId);
-      print("user data id $_UserData");
 
       // FILL USER DETAIL TO INPUTS
       firstNameController.text = _UserData.firstName;
@@ -181,7 +177,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
           backgroundColor: Colors.green,
           content: Text(
             "Data inserted successfully! $value",
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
           actions: [
             TextButton(

@@ -118,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               return GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, '/edit_user',
+                  Navigator.pushNamed(context, '/qr_screen',
                       arguments: user.id);
                 },
                 child: Padding(
@@ -136,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("${user.id}"),
-                              Text("First Name : ${user.firstName}"),
+                              Text("First Name Changed : ${user.firstName}"),
                               Text("Last Name : ${user.lastName}"),
                               Text("Updated : ${user.completed}".toString()),
                               Text("Gender :${user.gender}"),

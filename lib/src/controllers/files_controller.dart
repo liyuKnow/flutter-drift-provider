@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:master_drift_provider/src/controllers/permissions_controller.dart';
 import 'package:master_drift_provider/src/data/local/helper/db_helper.dart';
 import 'package:path/path.dart';
@@ -35,23 +36,9 @@ class FilesController {
         }
 
         insertIntoDb(rowDetail);
-
-        // TODO : SECOND MORE SAFE WAY ?
-        // for (var i = 1; i < rowDetail.length; i++) {
-        //   var data = rowDetail[i].split(',');
-
-        //   final entity = UserCompanion(
-        //       firstName: drift.Value(data[1]),
-        //       lastName: drift.Value(data[2]),
-        //       gender: drift.Value(data[3]),
-        //       country: drift.Value(data[4]),
-        //       age: drift.Value(int.parse(data[5])));
-
-        //   _db.insertUser(entity);
-        // }
       }
     } catch (e) {
-      print(e.toString());
+      return e.toString();
     }
   }
 
@@ -71,7 +58,6 @@ class FilesController {
 
       entities.add(entity);
     }
-    print('deleting');
     db.clearDatabase();
     db.insertMany(entities);
 
@@ -82,3 +68,32 @@ class FilesController {
     print("File Picker Logic");
   }
 }
+
+// class FilesControllerWidget extends StatelessWidget {
+//   const FilesControllerWidget({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return const Scaffold(
+//       body: Center(child: Text("hello")),
+//     );
+//   }
+
+//   getFiles() {
+//     try {
+      
+//     } catch (e) {
+//       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+//         content: CustomSnackBar(
+//           cardColor: Color.fromARGB(255, 103, 214, 112),
+//           bubbleColor: Color.fromARGB(255, 31, 160, 111),
+//           title: "Oh Great",
+//           message: "Data was imported successfully",
+//         ),
+//         behavior: SnackBarBehavior.floating,
+//         backgroundColor: Colors.transparent,
+//         elevation: 0,
+//       ));
+//     }
+//   }
+// }

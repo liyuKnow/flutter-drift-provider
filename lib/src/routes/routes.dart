@@ -16,10 +16,13 @@ class Routes {
                   ));
         }
         return _errorRoute();
-      // case '/qr_screen':
-      //   if ( args is int) {
-      //     return MaterialPageRoute(builder: (_) => const QRScreen());
-      //   }
+      case '/qr_screen':
+        if (args is int) {
+          return MaterialPageRoute(
+            builder: (_) => QRScreen(userId: args),
+          );
+        }
+        return _errorRoute();
       default:
         return _errorRoute();
     }

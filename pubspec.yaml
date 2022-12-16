@@ -23,6 +23,8 @@ dependencies:
   spreadsheet_decoder: ^2.1.1
   intl: ^0.17.0
   provider: ^6.0.5
+  flutter_svg: ^1.1.6
+  qr_code_scanner: ^1.0.1
 
 dev_dependencies:
   flutter_test:
@@ -37,3 +39,5 @@ flutter:
 
   uses-material-design: true
 
+  assets:
+    - assets/icons/
