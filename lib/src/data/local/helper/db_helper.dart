@@ -41,9 +41,24 @@ class ReportDatabase extends _$ReportDatabase {
     return await update(user).replace(entity);
   }
 
+  Future<void> clearDatabase() async {
+    // await resetPKeyIndex();
+    await (delete(user)).go();
+  }
+
   Future<int> insertUser(UserCompanion entity) async {
     return await into(user).insert(entity);
   }
+
+  Future<void> insertMany(List<UserCompanion> entities) async {
+    await batch((batch) {
+      // functions in a batch don't have to be awaited - just
+      // await the whole batch afterwards.
+      batch.insertAll(user, entities);
+    });
+  }
+
+  // Future<void> resetPKeyIndex;
 
   Future<int> deleteUser(int id) async {
     return await (delete(user)..where((tbl) => tbl.id.equals(id))).go();
@@ -62,7 +77,6 @@ class ReportDatabase extends _$ReportDatabase {
         .getSingle();
   }
 
-  // TODO : INSERT MULTIPLE USER RECORDS
   // TODO : SEARCH USER TABLE
   // TODO : GET USER DETAIL BY ID JOINED WITH LOCATION DATA
 }

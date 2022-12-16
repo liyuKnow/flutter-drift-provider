@@ -31,20 +31,28 @@ class _EditUserScreenState extends State<EditUserScreen> {
   @override
   void initState() {
     super.initState();
+    print(" I AM HERE I AM HERE I AM HERE I AM HERE I AM HERE");
     getUser();
   }
 
   Future<void> getUser() async {
-    _UserData =
-        await Provider.of<ReportDatabase>(context).getUsersByID(widget.userId);
+    print(
+        "/* -------------------------------------------------------------------------- */");
+    try {
+      _UserData = await Provider.of<ReportDatabase>(context, listen: false)
+          .getUsersByID(widget.userId);
+      print("user data id $_UserData");
 
-    // FILL USER DETAIL TO INPUTS
-    firstNameController.text = _UserData.firstName;
-    lastNameController.text = _UserData.lastName;
-    genderController.text = _UserData.gender;
-    countryController.text = _UserData.country;
-    ageController.text = _UserData.age.toString();
-    dateOfBirthController.text = _UserData.firstName;
+      // FILL USER DETAIL TO INPUTS
+      firstNameController.text = _UserData.firstName;
+      lastNameController.text = _UserData.lastName;
+      genderController.text = _UserData.gender;
+      countryController.text = _UserData.country;
+      ageController.text = _UserData.age.toString();
+      dateOfBirthController.text = _UserData.firstName;
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   @override
@@ -72,59 +80,61 @@ class _EditUserScreenState extends State<EditUserScreen> {
             },
             icon: Icon(Icons.delete_outline))
       ]),
-      body: Card(
-          child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Form(
-          key: _formKey,
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            CustomFormField(
-              controller: firstNameController,
-              txtLabel: "First Name",
-            ),
-            CustomFormField(
-              controller: lastNameController,
-              txtLabel: "Last Name",
-            ),
-            CustomFormField(
-              controller: genderController,
-              txtLabel: "Gender",
-            ),
-            CustomFormField(
-              controller: countryController,
-              txtLabel: "Country",
-            ),
-            CustomFormField(
-              controller: ageController,
-              txtLabel: "Age",
-            ),
-            CustomDatePickerFormField(
-              controller: dateOfBirthController,
-              txtLabel: "Date of Birth",
-              callback: () => pickDateOfBirth(context),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              TextButton(
-                  style: TextButton.styleFrom(
-                      padding: const EdgeInsets.all(12),
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.blue[300],
-                      textStyle: const TextStyle(
-                          fontSize: 15, fontWeight: FontWeight.w400)),
-                  onPressed: () {
-                    editUser();
-                  },
-                  child: const Text(
-                    'Update User',
-                    style: TextStyle(fontSize: 16),
-                  ))
-            ])
-          ]),
-        ),
-      )),
+      body: SingleChildScrollView(
+        child: Card(
+            child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Form(
+            key: _formKey,
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              CustomFormField(
+                controller: firstNameController,
+                txtLabel: "First Name",
+              ),
+              CustomFormField(
+                controller: lastNameController,
+                txtLabel: "Last Name",
+              ),
+              CustomFormField(
+                controller: genderController,
+                txtLabel: "Gender",
+              ),
+              CustomFormField(
+                controller: countryController,
+                txtLabel: "Country",
+              ),
+              CustomFormField(
+                controller: ageController,
+                txtLabel: "Age",
+              ),
+              CustomDatePickerFormField(
+                controller: dateOfBirthController,
+                txtLabel: "Date of Birth",
+                callback: () => pickDateOfBirth(context),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                TextButton(
+                    style: TextButton.styleFrom(
+                        padding: const EdgeInsets.all(12),
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.blue[300],
+                        textStyle: const TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w400)),
+                    onPressed: () {
+                      editUser();
+                    },
+                    child: const Text(
+                      'Update User',
+                      style: TextStyle(fontSize: 16),
+                    ))
+              ])
+            ]),
+          ),
+        )),
+      ),
     );
   }
 
@@ -164,7 +174,9 @@ class _EditUserScreenState extends State<EditUserScreen> {
         country: drift.Value(countryController.text),
         age: drift.Value(int.parse(ageController.text)));
 
-    Provider.of<ReportDatabase>(context).insertUser(entity).then((value) {
+    Provider.of<ReportDatabase>(context, listen: false)
+        .insertUser(entity)
+        .then((value) {
       ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
           backgroundColor: Colors.green,
           content: Text(
@@ -198,7 +210,9 @@ class _EditUserScreenState extends State<EditUserScreen> {
           country: drift.Value(countryController.text),
           age: drift.Value(int.parse(ageController.text)));
 
-      Provider.of<ReportDatabase>(context).updateUser(entity).then((value) {
+      Provider.of<ReportDatabase>(context, listen: false)
+          .updateUser(entity)
+          .then((value) {
         ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
             backgroundColor: Colors.green,
             content: Text(

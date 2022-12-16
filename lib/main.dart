@@ -5,17 +5,23 @@ import 'package:provider/provider.dart';
 import 'package:master_drift_provider/src/routes/routes.dart';
 
 void main() {
-  runApp(MultiProvider(
-    providers: [
-      Provider.value(value: ReportDatabase()),
-      ChangeNotifierProxyProvider<ReportDatabase, UserChangeNotifier>(
-          create: (context) => UserChangeNotifier(),
-          update: (context, db, notifier) => notifier!
-            ..initReportDatabase(db)
-            ..streamUserList())
-    ],
-    child: const MyApp(),
-  ));
+  runApp(
+    Provider(
+        create: (context) => ReportDatabase(),
+        child: const MyApp(),
+        dispose: (context, ReportDatabase db) => db.close()),
+  );
+  // runApp(MultiProvider(
+  //   providers: [
+  //     Provider.value(value: ReportDatabase()),
+  //     ChangeNotifierProxyProvider<ReportDatabase, UserChangeNotifier>(
+  //         create: (context) => UserChangeNotifier(),
+  //         update: (context, db, notifier) => notifier!
+  //           ..initReportDatabase(db)
+  //           ..streamUserList())
+  //   ],
+  //   child: const MyApp(),
+  // ));
 }
 
 class MyApp extends StatelessWidget {
